@@ -1,0 +1,37 @@
+# swagger.yml
+
+openapi: 3.0.0
+info:
+  title: "Nonogram API"
+  description: "An API that allows you to play nonograms"
+  version: "1.0.0"
+servers:
+  - url: "http://localhost:8080"
+    description: "Local server"
+paths:
+  /nonogram:
+    get:
+      summary: "Get a random nonogram for a certain board size"
+      operationId: "getRandomNonogram"
+      parameters:
+        - name: "size"
+          in: "query"
+          description: "The size of the board"
+          required: true
+          schema:
+            type: "integer"
+            minimum: 5
+            maximum: 20
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Nonogram"
+        400:
+          description: "Bad Request"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
