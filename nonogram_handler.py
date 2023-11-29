@@ -27,12 +27,15 @@ class nonogram_handler:
         # the first element is the size
         # the second element is the clues
         unparsed_nonogram = self.c.fetchone()
-        # parse the size and the clues
-        size = int(unparsed_nonogram[0])
-        clues = json.loads(unparsed_nonogram[1])
-        # create a new nonogram
-        self.nonogram = nonogram(size, clues)
-        print(self.nonogram)
+        if unparsed_nonogram is None:
+            self.nonogram = None
+        else:
+            # parse the size and the clues
+            size = int(unparsed_nonogram[0])
+            clues = json.loads(unparsed_nonogram[1])
+            # create a new nonogram
+            self.nonogram = nonogram(size, clues)
+            print(self.nonogram)
 
     def make_move(self, move):
         # check if the move is valid

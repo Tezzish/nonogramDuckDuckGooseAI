@@ -29,12 +29,20 @@ def nonogram():
     else:
         handler.generate_nonogram()
     
-    return render_template('nonogram.html', grid_size = grid_size, clues = handler.nonogram.clues, mistakes = handler.mistakes)
+    if handler.nonogram is None:
+        print("Nonogram is None")
+        return redirect(url_for('index'))
+    context = {
+        'grid_size': grid_size,
+        'clues': handler.nonogram.clues,
+        'mistakes': handler.mistakes
+    }
+    return render_template('nonogram.html', grid_context = context, mistakes = handler.mistakes)
 
 # # When the user makes a move, send the move to the server
-# @socketio.on('move')
-# def make_move(move):
-#     print(f"Move: {move}")
+@socketio.on('move')
+def make_move(move):
+    print(f"Move: {move}")
 
 
 if __name__ == '__main__':
