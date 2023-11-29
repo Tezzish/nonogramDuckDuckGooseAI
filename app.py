@@ -14,8 +14,7 @@ def getRandomNonogram():
     grid_size = request.args.get('grid_size', '5')
 
     print(f"Generating grid with size: {grid_size}")
-
-    # Return a response (for demonstration purposes)
+    
     return f"Generating grid with size: {grid_size}"
 
 if __name__ == '__main__':
