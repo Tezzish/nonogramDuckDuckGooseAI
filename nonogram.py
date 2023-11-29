@@ -63,17 +63,16 @@ class nonogram:
         return True
 
     def check_line(self, line, clues):
-        # go through the line and check if it fulfills the clues
         curr_count = 0
         curr_clue = 0
         # we don't care about the "whitespace" before and after the values
         encountered = False
+        # go through the line and check if it fulfills the clues
         for i in range(len(line)):
             if line[i] == 0 and encountered and curr_count > 0:
                 #check if the current count is equal to the current clue
                 if curr_count != clues[curr_clue]:
                     return False
-
                 #increase the curr_clue
                 curr_clue += 1
                 if curr_clue >= len(clues):
