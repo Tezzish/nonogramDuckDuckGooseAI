@@ -69,6 +69,7 @@ class nonogram:
         encountered = False
         # go through the line and check if it fulfills the clues
         for i in range(len(line)):
+            # if it is white, and we have encountered a black and we're not on a white streak, we check if the current count is equal to the current clue
             if line[i] == 0 and encountered and curr_count > 0:
                 #check if the current count is equal to the current clue
                 if curr_count != clues[curr_clue]:

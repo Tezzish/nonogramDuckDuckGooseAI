@@ -14,14 +14,6 @@ class nonogram_handler:
     def generate_nonogram(self):
         # choose a random nonogram from the database
         # the table has two columns, size and clues
-        # size is the size of the grid
-        # clues is a json string of the clues
-        # the clues are stored as a json string because they are a variable length
-        # the clues are stored as a tuple of two arrays
-        # the first array is the row clues
-        # the second array is the column clues
-        # select a random row from the table with a certain size
-        # the size is passed in as a parameter
         self.c.execute(f"SELECT * FROM nonograms WHERE size = '{self.size}' ORDER BY RANDOM() LIMIT 1")
         # now we parse the input
         # the first element is the size

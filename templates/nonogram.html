@@ -2,18 +2,35 @@
 <html>
 <head>
     <title>Nonogram</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 20px auto;
+        }
+        td {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #000;
+            text-align: center;
+            font-size: 16px;
+        }
+        .black{
+            background-color: #000000;
+        }
+    </style>
 </head>
 <body>
     <h1>Nonogram Game</h1>
-   
+    <div id = "grid"></div>
 </body>
 <script>
     var contextData = {
-        size : '{{ grid_context.grid_size }}',
+        size: '{{ grid_context.grid_size }}',
         clues: '{{ grid_context.clues }}',
         mistakes: '{{ mistakes }}',
     }
     // print out the contextData
 </script>
-<script src="static/js/nonogram.js"></script>
+<script src="static/nonogram.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 </html>
