@@ -13,8 +13,6 @@ def getRandomNonogram():
     # Get the grid size from the URL parameters
     grid_size = request.args.get('grid_size', '5')
 
-    print(int(grid_size) + 10)
-
     print(f"Generating grid with size: {grid_size}")
 
     # Return a response (for demonstration purposes)
