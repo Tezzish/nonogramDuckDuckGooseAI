@@ -1,9 +1,0 @@
-For each call from the frontend, we send the value of the position in the grid
-
-For the setup call from the frontend, we send the value of the grid size
-
-For the setup call from the backend, we send the values on the sides of the grids and the row and column they correspond to
-
-For each call from the backend, we send actions? (this could include if it's a correct move and maybe the crosses)
-
-We do need a backend with database interactions in order to store the grids
