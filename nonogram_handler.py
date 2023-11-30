@@ -40,11 +40,8 @@ class nonogram_handler:
             return False
         
     def is_valid_move(self, move):
+        # if it's in the grid
         if int(move[0]) < self.size and int(move[1]) < self.size:
-            # if it's already selected, it's not a valid move so we return false
-            if self.nonogram.grid[move[0]][move[1]] == 1:
-                return False
-            else:
                 return True
         else:
             return False

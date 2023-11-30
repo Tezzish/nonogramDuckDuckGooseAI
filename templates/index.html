@@ -6,7 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    Hellooooooooooooooooooooo!!!
     <form action="/nonogram" method="get">
     <input type="range" id="gridSize" name="grid_size" min="5" max="10" value="5">
         <span id="gridSizeLabel">5 x 5</span> <!-- Display the current value of the slider -->
@@ -14,4 +13,10 @@
     <input type="submit" value="Play">
     </form>
 </body>
+<script>
+    // update the grid size label when the slider changes
+    document.getElementById("gridSize").oninput = function() {
+        document.getElementById("gridSizeLabel").innerHTML = this.value + " x " + this.value;
+    }
+</script>
 </html>

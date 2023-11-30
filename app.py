@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO, emit
 from nonogram_handler import nonogram_handler
 
@@ -10,6 +10,7 @@ handler = None
 def index():
     return render_template('index.html')
 
+# sets up the nonogram
 @app.route('/nonogram')
 def nonogram():
     # Get the grid size from the URL parameters
@@ -32,11 +33,10 @@ def nonogram():
 
     return render_template('nonogram.html', grid_context = context, mistakes = handler.mistakes)
 
-# # When the user makes a move, send the move to the server
+# When the user makes a move, the backend processes it
 @socketio.on('move')
 def make_move(move):
-    game_over = handler.game_over
-    if game_over:
+    if handler.game_over:
         emit('game over', broadcast = True)
         return redirect(url_for('game_over'))
     else:
@@ -45,15 +45,11 @@ def make_move(move):
             #if solved
             if handler.is_solved():
                 emit('solved', broadcast = True)
-            # if not solved
-            else:
-                emit('not solved', broadcast = True)
         # if not valid and correct then we check if game over
         elif not handler.game_over:
             emit('incorrect', broadcast = True)        
         else:
             emit('game over', broadcast = True)
-            return redirect(url_for('game_over'))
     
 @app.route('/game_over')
 def game_over():
