@@ -118,7 +118,6 @@ function addClues() {
     }
     //add the row to the table
     table.insertBefore(row, cells[0].parentNode);
-
 }
 
 connectSocket();
@@ -126,3 +125,30 @@ createGrid(contextData.size);
 checkWin();
 addListeners();
 addClues();
+
+// after every five cells, add a border to the grid
+const cells = document.querySelectorAll('td');
+// for each row except the first one, add a border after every 5 cells
+// iterate through the tr's
+trs = document.querySelectorAll('tr');
+// for each tr, iterate through the td's
+// start at 1 because we don't want to add a border to the first td
+for (let i = 1; i < trs.length; i++) {
+    tr = trs[i];
+    for (let i = 1; i < tr.children.length; i++) {
+        // if the index is divisible by 5, add a border
+        if (i % 5 === 0) {
+            tr.children[i].style.borderRight = '6px solid black';
+        }
+    }
+}
+
+// on every 5th tr (except the first one), add a border to the bottom
+for (let i = 1; i < trs.length; i++) {
+    if (i % 5 === 0) {
+        // add a border to every td in the tr except the first one
+        for (let j = 1; j < trs[i].children.length; j++) {
+            trs[i].children[j].style.borderBottom = '6px solid black';
+        }
+    }
+}
