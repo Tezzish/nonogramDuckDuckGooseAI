@@ -1,3 +1,26 @@
+var socket = null;
+
+function connectSocket() {
+    document.addEventListener('DOMContentLoaded', function () {
+        // connect to the socket
+        console.log("connecting")
+        socket = io.connect('127.0.0.1:8000');
+        // add the event listeners for the socket
+        socket.on('solved', function () {
+            console.log('Server says: Puzzle Solved!');
+            // Handle the solved event response as needed
+        });
+    
+        // Example: Listening for 'not solved' event
+        socket.on('not solved', function () {
+            console.log('Server says: Puzzle Not Solved!');
+            // Handle the not solved event response as needed
+        });
+    });    
+
+  
+}
+
 //create a grid in the html with a given size
 function createGrid(size) {
     const table = document.createElement('table');
@@ -40,10 +63,6 @@ function checkWin() {
     document.body.appendChild(button);
 }
 
-var socket = null;
-document.addEventListener('DOMContentLoaded', function () {
-    socket = io.connect('127.0.0.1:8000');
-});
 
 // for each row and column, add the clues
 const clues = JSON.parse(contextData.clues);
@@ -91,6 +110,7 @@ function addClues() {
 
 }
 
+connectSocket();
 createGrid(contextData.size);
 checkWin();
 addListeners();

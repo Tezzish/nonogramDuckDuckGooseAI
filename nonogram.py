@@ -44,48 +44,49 @@ class nonogram:
             return False
          
     def is_solved(self):
+
         # check if the grid is solved
         # we do this by checking if for each row and column the clues are satisfied
         # we'll start with the rows
         row_clues = self.clues[0]
         for i in range(self.size):
+            print("row:", self.grid[i])
             # call check line function with the clues and the line
             if not self.check_line(self.grid[i], row_clues[i]):
                 return False
-
         # next check the columns
         col_clues = self.clues[1]
+        print("col_clues: ", col_clues)
         for i in range(self.size):
             # use python indexing to get the slice
             column = [row[i] for row in self.grid]
+            print("column: ", column)
             if not self.check_line(column, col_clues[i]):
                 return False
         return True
 
     def check_line(self, line, clues):
-        curr_count = 0
-        curr_clue = 0
-        # we don't care about the "whitespace" before and after the values
-        encountered = False
-        # go through the line and check if it fulfills the clues
-        for i in range(len(line)):
-            # if it is white, and we have encountered a black and we're not on a white streak, we check if the current count is equal to the current clue
-            if line[i] == 0 and encountered and curr_count > 0:
-                #check if the current count is equal to the current clue
-                if curr_count != clues[curr_clue]:
-                    return False
-                #increase the curr_clue
-                curr_clue += 1
-                if curr_clue >= len(clues):
-                    return True
-                #reset the counter
-                curr_count = 0
-                
+        # we want to check if the entered line satisfies the clues
+        # we parse through a line, finding clusters of 1's
+        # we then check if the length of the cluster matches the clue
+        # if it does, we move onto the next clue
+        # if it doesn't, we return false
+        # if we reach the end of the line and the clues are satisfied, we return true
+        cluster = 0
+        clusters = []
+        for i in range(self.size):
+            # if we encounter a 1, we increment the cluster
             if line[i] == 1:
-                if not encountered:
-                    encountered = True
-                curr_count += 1
-            
-        if (curr_clue != len(clues) - 1):
-            return False
-        return True
+                cluster += 1
+            # if we encounter a 0, we check if the cluster matches the clue
+            # if it does, we move onto the next clue
+            # if it doesn't, we return false
+            else:
+                if cluster != 0:
+                    clusters.append(cluster)
+                cluster = 0
+            # if we reach the end of the line, we check if the cluster matches the clue
+            if i == self.size - 1 and cluster != 0:
+                clusters.append(cluster)
+        if clusters == clues:
+            return True

@@ -45,15 +45,26 @@ def nonogram():
 @socketio.on('move')
 def make_move(move):
     handler.make_move((move['x'], move['y']))
+    # if handler.is_solved():
+    #     emit('solved', broadcast = True)
+    #     print("solved")
+    #     # redirect to the nonogram page
+    # else:
+    #     emit('not solved', broadcast = True)
+    #     print("not solved")
+
 
 @socketio.on('check')
 def check():
     if handler.is_solved():
         emit('solved', broadcast = True)
         print("solved")
+        # redirect to the nonogram page
     else:
         emit('not solved', broadcast = True)
         print("not solved")
+
+    return redirect(url_for('nonogram'))
         
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', port = 8000, debug = True)
