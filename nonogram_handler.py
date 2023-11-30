@@ -12,12 +12,6 @@ class nonogram_handler:
         self.mistakes = 0
 
     def generate_nonogram(self):
-        # choose a random nonogram from the database
-        # the table has two columns, size and clues
-        # now we parse the input
-        # the first element is the size
-        # the second element is the clues
-        # open the csv file
         with open('nonograms.csv', 'r') as file:
             csvreader = csv.reader(file)
             # skip the header
@@ -27,9 +21,6 @@ class nonogram_handler:
             # choose a random nonogram with the given size
             unparsed_nonogram = None
             # filter out the nonograms that don't have the right size
-            print("nonograms", nonograms)
-            print(nonograms[0][0])
-            print(self.size)
             nonograms = [nonogram for nonogram in nonograms if int(nonogram[0]) == self.size]
             # choose a random nonogram
             unparsed_nonogram = random.choice(nonograms)
