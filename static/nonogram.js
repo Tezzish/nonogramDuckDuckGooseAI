@@ -1,7 +1,3 @@
-
-
-
-
 //create a grid in the html with a given size
 function createGrid(size) {
     const table = document.createElement('table');
@@ -36,14 +32,12 @@ function addListeners() {
 
 function checkWin() {
     const button = document.createElement('button');
-
     button.innerHTML = 'Check';
     button.addEventListener('click', () => {
         // var socket = io.connect('127.0.0.1:8000');
         socket.emit('check');
     });
     document.body.appendChild(button);
-    console.log("checkWin");
 }
 
 var socket = null;
@@ -51,6 +45,53 @@ document.addEventListener('DOMContentLoaded', function () {
     socket = io.connect('127.0.0.1:8000');
 });
 
+// for each row and column, add the clues
+const clues = JSON.parse(contextData.clues);
+const row_clues = clues[0];
+const col_clues = clues[1];
+
+function addClues() {
+    //add the row clues to the left of the grid
+    const table = document.querySelector('table');
+    //the rows of the table
+    const rows = table.querySelectorAll('tr');
+    //for each row, create a new td and add the clue
+    for (let i = 0; i < row_clues.length; i++) {
+        const clue = document.createElement('td');
+        //add the classes
+        clue.classList.add('row-clue');
+        clue.classList.add('clue');
+        //separator between the numbers in the clue
+        clue.innerHTML = row_clues[i].join('  ');
+        //add the clue to the row
+        rows[i].insertBefore(clue, rows[i].firstChild);
+    }
+
+    // add the column clues on top of the grid
+    const cells = table.querySelectorAll('td');
+    // create a new tr for the column clues
+    const row = document.createElement('tr');
+    // add an empty td to the left of the clues because we need to offset the column clues
+    const empty = document.createElement('td');
+    empty.classList.add('clue');
+    // make empty have no border
+    empty.style.border = 'none';
+    row.appendChild(empty);
+    // for each column, create a new td and add the clue
+    // same thing as for the rows
+    for (let i = 0; i < col_clues.length; i++) {
+        const clue = document.createElement('td');
+        clue.classList.add('col-clue');
+        clue.classList.add('clue');
+        clue.innerHTML = col_clues[i].join('<br><br>');
+        row.appendChild(clue);
+    }
+    //add the row to the table
+    table.insertBefore(row, cells[0].parentNode);
+
+}
+
 createGrid(contextData.size);
 checkWin();
 addListeners();
+addClues();
