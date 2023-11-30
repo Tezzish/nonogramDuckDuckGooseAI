@@ -1,31 +1,41 @@
 var socket = null;
-console.log(contextData.clues);
+var last_cell = null;
+// connect to the socket
 function connectSocket() {
     document.addEventListener('DOMContentLoaded', function () {
         // connect to the socket
-        console.log("connecting")
         socket = io.connect('127.0.0.1:8000');
-        // add the event listeners for the socket
+
         socket.on('solved', function () {
-            console.log('Server says: Puzzle Solved!');
             // Handle the solved event response as needed
         });
-    
-        // Example: Listening for 'not solved' event
+
         socket.on('not solved', function () {
-            console.log('Server says: Puzzle Not Solved!');
             // Handle the not solved event response as needed
         });
-    });    
+
+        socket.on("game over", function () {
+            // Handle the game over event response as needed
+            window.location.href = '/game_over';
+        });    
+        socket.on("incorrect", function () {
+            // Handle the incorrect event response as needed
+            last_cell.classList.remove('black');
+            last_cell.classList.add("red");
+        });
+        socket.on("solved", function () {
+            // Handle the solved event response as needed
+            window.location.href = '/solved';
+        });
+
+    });
 }
 
 //create a grid in the html with a given size
 function createGrid(size) {
     const table = document.createElement('table');
-
     for (let i = 0; i < size; i++) {
         const row = document.createElement('tr');
-
         for (let j = 0; j < size; j++) {
             const cell = document.createElement('td');
             row.appendChild(cell);
@@ -33,7 +43,6 @@ function createGrid(size) {
 
         table.appendChild(row);
     }
-
     document.body.appendChild(table);
 }
 
@@ -47,10 +56,18 @@ function addListeners() {
             if (cell.innerHTML === 'X') {
                 return;
             }
+            // if the cell is already black, do nothing
+            if (cell.classList.contains('black')) {
+                return;
+            }
+            // if the cell is white, make it black
             cell.classList.add('black');
+            // if the cell is already black, we don't want to send anything to the server
             const data = {y : cell.cellIndex - 1, x : cell.parentNode.rowIndex - 1};
             socket.emit('move', data);
+            last_cell = cell;
         });
+
         // on right click, toggle the inner content to an x
         cell.addEventListener('contextmenu', (e) => {
             e.preventDefault();
@@ -62,17 +79,6 @@ function addListeners() {
         });
     });
 }
-
-function checkWin() {
-    const button = document.createElement('button');
-    button.innerHTML = 'Check';
-    button.addEventListener('click', () => {
-        // var socket = io.connect('127.0.0.1:8000');
-        socket.emit('check');
-    });
-    document.body.appendChild(button);
-}
-
 
 // for each row and column, add the clues
 const clues = JSON.parse(contextData.clues);
@@ -121,7 +127,6 @@ function addClues() {
 
 connectSocket();
 createGrid(contextData.size);
-checkWin();
 addListeners();
 addClues();
 

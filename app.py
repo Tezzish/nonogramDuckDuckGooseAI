@@ -16,17 +16,12 @@ def nonogram():
     grid_size = request.args.get('grid_size', '5')
 
     global handler
-    handler = nonogram_handler(grid_size)
+    handler = nonogram_handler(int(grid_size))
 
     print(f"Generating grid with size: {grid_size}")
 
     # create a new nonogram
-    # if game over, then redirect to game over page
-    if handler.game_over == True:
-        return redirect(url_for('game_over'))
-    # else generate a new nonogram
-    else:
-        handler.generate_nonogram()
+    handler.generate_nonogram()
     
     if handler.nonogram is None:
         print("Nonogram is None")
@@ -43,28 +38,40 @@ def nonogram():
 # # When the user makes a move, send the move to the server
 @socketio.on('move')
 def make_move(move):
-    if handler.make_move((move['x'], move['y'])):
-        if handler.is_solved():
-            emit('solved', broadcast = True)
-            print("solved")
-            # redirect to the nonogram page
-        else:
-            emit('not solved', broadcast = True)
-            print("not solved")
-
-
-@socketio.on('check')
-def check():
-    if handler.is_solved():
-        emit('solved', broadcast = True)
-        print("solved")
-        # redirect to the nonogram page
+    game_over = handler.game_over
+    if game_over:
+        emit('game over', broadcast = True)
+        print("1 game over")
+        return redirect(url_for('game_over'))
     else:
-        emit('not solved', broadcast = True)
-        print("not solved")
-
-    return redirect(url_for('nonogram'))
+        # if valid and correct
+        if handler.make_move((move['x'], move['y'])):
+            #if solved
+            if handler.is_solved():
+                emit('solved', broadcast = True)
+                print("solved")
+            # if not solved
+            else:
+                emit('not solved', broadcast = True)
+                print("not solved")
+        # if not valid and correct then we check if game over
+        elif not handler.game_over:
+            emit('incorrect', broadcast = True)
+            print("incorrect")
         
+        else:
+            emit('game over', broadcast = True)
+            print("2 game over")
+            return redirect(url_for('game_over'))
+    
+@app.route('/game_over')
+def game_over():
+    return render_template('game_over.html')
+
+@app.route('/solved')
+def solved():
+    return render_template('solved.html')
+
 if __name__ == '__main__':
     app.run(host = '0.0.0.0', port = 8000, debug = True)
     

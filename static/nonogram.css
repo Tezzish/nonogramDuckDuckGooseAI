@@ -15,6 +15,10 @@ td {
     background-color: #000000;
 }
 
+.red{
+    background-color: #ff0000;
+}
+
 .row-clue {
     width: 100px;
 }

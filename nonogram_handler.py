@@ -9,6 +9,7 @@ class nonogram_handler:
         self.nonogram = None
         self.game_over = False
         self.size = size
+        self.mistakes = 0
 
     def generate_nonogram(self):
         # choose a random nonogram from the database
@@ -26,36 +27,85 @@ class nonogram_handler:
             # choose a random nonogram with the given size
             unparsed_nonogram = None
             # filter out the nonograms that don't have the right size
-            print(nonograms[0])
-            nonograms = [nonogram for nonogram in nonograms if nonogram[0] == self.size]
+            print("nonograms", nonograms)
+            print(nonograms[0][0])
+            print(self.size)
+            nonograms = [nonogram for nonogram in nonograms if int(nonogram[0]) == self.size]
             # choose a random nonogram
             unparsed_nonogram = random.choice(nonograms)
             size = int(unparsed_nonogram[0])
-            print(size)
-            clues = json.loads(unparsed_nonogram[1])     
-            print(clues)
+            clues = json.loads(unparsed_nonogram[1])
+            solution = json.loads(unparsed_nonogram[2])
             # create a new nonogram
-            self.nonogram = nonogram(size, clues)
+            self.nonogram = nonogram(size, clues, solution)
 
+    def is_correct_move(self, move):
+        # check if the move is correct
+        if self.nonogram.solution[move[0]][move[1]] == 1:
+            return True
+        else:
+            return False
+        
+    def is_valid_move(self, move):
+        if int(move[0]) < self.size and int(move[1]) < self.size:
+            # if it's already selected, it's not a valid move so we return false
+            if self.nonogram.grid[move[0]][move[1]] == 1:
+                return False
+            else:
+                return True
+        else:
+            return False
+        
     def make_move(self, move):
-        # check if the move is valid
-        if self.nonogram.is_valid_move(move):
+        valid = self.is_valid_move(move)
+        correct = False
+        if valid:
+            correct = self.is_correct_move(move)
+        # check if the move is valid and correct
+        if valid and correct:
             # update the grid
             self.nonogram.make_move(move)
             return True
+        # else it's a mistake
         else:
-            return False
-
-    # check if solved
-    # if it is solved, return a new nonogram
-    # else increment the mistakes and if it's more than 3, quit the game
-    def is_solved(self):
-        if self.nonogram.is_solved():
-            return True
-        elif self.mistakes <= 3:
             self.mistakes += 1
+            if self.mistakes > 2:
+                self.game_over = True
+            print("mistakes", self.mistakes)
             return False
-        else:
-            self.game_over = True
-            return False
-        
+                
+    def is_solved(self):
+        # check if the grid is solved
+        # we do this by checking if for each row and column the clues are satisfied
+        row_clues = self.nonogram.clues[0]
+        for i in range(self.size):
+            # call check line function with the clues and the line
+            if not self.check_line(self.nonogram.grid[i], row_clues[i]):
+                return False
+        # next check the columns
+        col_clues = self.nonogram.clues[1]
+        for i in range(self.size):
+            column = [row[i] for row in self.nonogram.grid]
+            if not self.check_line(column, col_clues[i]):
+                return False
+        return True
+    
+    def check_line(self, line, clues):
+        cluster = 0
+        clusters = []
+        for i in range(self.size):
+            # if we encounter a 1, we increment the cluster
+            if line[i] == 1:
+                cluster += 1
+            # if we encounter a 0, we check if the cluster matches the clue
+            # if it does, we move onto the next clue
+            # if it doesn't, we return false
+            else:
+                if cluster != 0:
+                    clusters.append(cluster)
+                cluster = 0
+            # if we reach the end of the line, we check if the cluster matches the clue
+            if i == self.size - 1 and cluster != 0:
+                clusters.append(cluster)
+        if clusters == clues:
+            return True
