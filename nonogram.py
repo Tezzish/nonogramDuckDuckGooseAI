@@ -50,17 +50,14 @@ class nonogram:
         # we'll start with the rows
         row_clues = self.clues[0]
         for i in range(self.size):
-            print("row:", self.grid[i])
             # call check line function with the clues and the line
             if not self.check_line(self.grid[i], row_clues[i]):
                 return False
         # next check the columns
         col_clues = self.clues[1]
-        print("col_clues: ", col_clues)
         for i in range(self.size):
             # use python indexing to get the slice
             column = [row[i] for row in self.grid]
-            print("column: ", column)
             if not self.check_line(column, col_clues[i]):
                 return False
         return True

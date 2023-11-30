@@ -17,8 +17,6 @@ function connectSocket() {
             // Handle the not solved event response as needed
         });
     });    
-
-  
 }
 
 //create a grid in the html with a given size
@@ -45,10 +43,23 @@ function addListeners() {
 
     cells.forEach(cell => {
         cell.addEventListener('click', () => {
+            //if the cell is has an x, we don't want to change the color
+            if (cell.innerHTML === 'X') {
+                return;
+            }
             cell.classList.add('black');
             // send the coordinates of the cell to the server
             const data = {y : cell.cellIndex - 1, x : cell.parentNode.rowIndex - 1};
             socket.emit('move', data);
+        });
+        // on right click, toggle the inner content to an x
+        cell.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            if (cell.innerHTML === 'X') {
+                cell.innerHTML = '';
+            } else {
+                cell.innerHTML = 'X';
+            }
         });
     });
 }

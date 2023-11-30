@@ -1,5 +1,4 @@
 # app.py
-
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_socketio import SocketIO, emit
 from nonogram_handler import nonogram_handler
@@ -45,13 +44,13 @@ def nonogram():
 @socketio.on('move')
 def make_move(move):
     handler.make_move((move['x'], move['y']))
-    # if handler.is_solved():
-    #     emit('solved', broadcast = True)
-    #     print("solved")
-    #     # redirect to the nonogram page
-    # else:
-    #     emit('not solved', broadcast = True)
-    #     print("not solved")
+    if handler.is_solved():
+        emit('solved', broadcast = True)
+        print("solved")
+        # redirect to the nonogram page
+    else:
+        emit('not solved', broadcast = True)
+        print("not solved")
 
 
 @socketio.on('check')
