@@ -18,13 +18,10 @@ def nonogram():
     global handler
     handler = nonogram_handler(int(grid_size))
 
-    print(f"Generating grid with size: {grid_size}")
-
     # create a new nonogram
     handler.generate_nonogram()
     
     if handler.nonogram is None:
-        print("Nonogram is None")
         return redirect(url_for('index'))
     
     context = {
@@ -41,7 +38,6 @@ def make_move(move):
     game_over = handler.game_over
     if game_over:
         emit('game over', broadcast = True)
-        print("1 game over")
         return redirect(url_for('game_over'))
     else:
         # if valid and correct
@@ -49,19 +45,14 @@ def make_move(move):
             #if solved
             if handler.is_solved():
                 emit('solved', broadcast = True)
-                print("solved")
             # if not solved
             else:
                 emit('not solved', broadcast = True)
-                print("not solved")
         # if not valid and correct then we check if game over
         elif not handler.game_over:
-            emit('incorrect', broadcast = True)
-            print("incorrect")
-        
+            emit('incorrect', broadcast = True)        
         else:
             emit('game over', broadcast = True)
-            print("2 game over")
             return redirect(url_for('game_over'))
     
 @app.route('/game_over')

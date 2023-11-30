@@ -22,6 +22,8 @@ class nonogram_handler:
             unparsed_nonogram = None
             # filter out the nonograms that don't have the right size
             nonograms = [nonogram for nonogram in nonograms if int(nonogram[0]) == self.size]
+            if (len(nonograms) == 0):
+                return
             # choose a random nonogram
             unparsed_nonogram = random.choice(nonograms)
             size = int(unparsed_nonogram[0])
