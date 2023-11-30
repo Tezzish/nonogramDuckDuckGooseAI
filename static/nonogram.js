@@ -1,5 +1,5 @@
 var socket = null;
-
+console.log(contextData.clues);
 function connectSocket() {
     document.addEventListener('DOMContentLoaded', function () {
         // connect to the socket
@@ -48,7 +48,6 @@ function addListeners() {
                 return;
             }
             cell.classList.add('black');
-            // send the coordinates of the cell to the server
             const data = {y : cell.cellIndex - 1, x : cell.parentNode.rowIndex - 1};
             socket.emit('move', data);
         });

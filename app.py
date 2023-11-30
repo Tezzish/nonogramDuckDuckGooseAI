@@ -43,14 +43,14 @@ def nonogram():
 # # When the user makes a move, send the move to the server
 @socketio.on('move')
 def make_move(move):
-    handler.make_move((move['x'], move['y']))
-    if handler.is_solved():
-        emit('solved', broadcast = True)
-        print("solved")
-        # redirect to the nonogram page
-    else:
-        emit('not solved', broadcast = True)
-        print("not solved")
+    if handler.make_move((move['x'], move['y'])):
+        if handler.is_solved():
+            emit('solved', broadcast = True)
+            print("solved")
+            # redirect to the nonogram page
+        else:
+            emit('not solved', broadcast = True)
+            print("not solved")
 
 
 @socketio.on('check')

@@ -61,6 +61,10 @@ class nonogram:
             if not self.check_line(column, col_clues[i]):
                 return False
         return True
+    
+    def correct_move():
+        # if the move is correct, we return true
+        pass
 
     def check_line(self, line, clues):
         # we want to check if the entered line satisfies the clues
